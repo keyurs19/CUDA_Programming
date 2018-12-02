@@ -2,7 +2,7 @@
 #define _MATRIXMUL_H_
 
 // Define matrix dimensions
-#define MATRIX_SIZE 4096
+#define MATRIX_SIZE 1024
 #define TILE_SIZE 32
 #define NUM_COLUMNS MATRIX_SIZE // Number of columns in Matrix A
 #define NUM_ROWS MATRIX_SIZE // Number of rows in Matrix A
