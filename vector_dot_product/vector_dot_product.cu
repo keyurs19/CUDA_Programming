@@ -4,7 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include <float.h>
-#include <time.h>
+#include <sys/time.h>
 
 // includes, kernels
 #include "vector_dot_product_kernel.cu"
@@ -47,11 +47,18 @@ run_test(unsigned int num_elements)
 		C[i] = 0.0f;
 	}
 	printf("Generating dot product on the CPU. \n");
+	struct timeval start, stop;	
+		gettimeofday(&start, NULL);	
+
 	float reference = compute_gold(A, B, num_elements);
-    
+    	gettimeofday(&stop, NULL);
+		printf("Execution time CPU = %fs. \n", (float)(stop.tv_sec - start.tv_sec + (stop.tv_usec - start.tv_usec)/(float)1000000));
 	/* Edit this function to compute the result vector on the GPU. 
        The result should be placed in the gpu_result variable. */
+	
+
 	compute_on_device(A, B, C, num_elements);
+	
 	for(unsigned int i = 0; i<NUM_BLOCKS; i++){
 		gpu_result += C[i];
 	}
@@ -88,7 +95,12 @@ compute_on_device(float *A_on_host, float *B_on_host, float *C_on_host, int num_
 	dim3 grid(NUM_BLOCKS,1);
 	
 	// Launch the kernel
+	struct timeval start, stop;	
+		gettimeofday(&start, NULL);	
 	vector_dot_product_kernel<<<grid, thread_block>>>(A_on_device, B_on_device, C_on_device, num_elements);
+
+	gettimeofday(&stop, NULL);
+		printf("Execution time GPU = %fs. \n", (float)(stop.tv_sec - start.tv_sec + (stop.tv_usec - start.tv_usec)/(float)1000000));
 
 	cudaMemcpy(C_on_host, C_on_device, NUM_BLOCKS * sizeof(float), cudaMemcpyDeviceToHost);
 
